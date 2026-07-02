@@ -1,19 +1,27 @@
 import { SWATCHES } from "../colors";
+import { Avatar } from "./Avatar";
 
 export function ColorBar({
   present,
   active,
   onSelect,
+  npub,
+  picture,
+  name,
 }: {
   present: Set<string>;
   active: string | null;
   onSelect: (id: string | null) => void;
+  npub: string;
+  picture?: string;
+  name?: string;
 }) {
   const swatches = SWATCHES.filter((swatch) => present.has(swatch.id));
-  if (swatches.length === 0) return null;
+  if (swatches.length === 0 && !picture) return null;
 
   return (
     <div className="colorbar">
+      <Avatar npub={npub} picture={picture} name={name} />
       {swatches.map((swatch) => (
         <button
           key={swatch.id}

@@ -11,7 +11,7 @@ export function Avatar({
 
   return (
     <a
-      className="avatar"
+      className="swatch avatar"
       href={`https://njump.to/${npub}`}
       target="_blank"
       rel="noreferrer"

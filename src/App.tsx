@@ -6,7 +6,6 @@ import { eventStore, loading$, loadGm, loadMore } from "./nostr";
 import { getImages, matchesFilter } from "./content";
 import { Gallery } from "./components/Gallery";
 import { ColorBar } from "./components/ColorBar";
-import { Avatar } from "./components/Avatar";
 
 export default function App() {
   useEffect(loadGm, []);
@@ -58,10 +57,14 @@ export default function App() {
 
   return (
     <div className="app">
-      <div className="topbar">
-        <Avatar npub={NPUB} picture={profile?.picture} name={profile?.display_name || profile?.name} />
-        <ColorBar present={present} active={color} onSelect={setColor} />
-      </div>
+      <ColorBar
+        present={present}
+        active={color}
+        onSelect={setColor}
+        npub={NPUB}
+        picture={profile?.picture}
+        name={profile?.display_name || profile?.name}
+      />
       <Gallery notes={withImages} activeColor={color} buckets={buckets} onColors={onColors} />
       {color && visibleCount === 0 && (
         <p className="state">No {color} images yet. Try loading more.</p>
