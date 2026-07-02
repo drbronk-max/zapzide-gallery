@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { use$ } from "applesauce-react/hooks";
 import { FILTER_TERM, PUBKEY } from "./config";
 import { eventStore, loading$, loadGm, loadMore } from "./nostr";
 import { getImages, matchesFilter } from "./content";
+import { loadDominantColor } from "./colors";
 import { Gallery } from "./components/Gallery";
+import { ColorBar } from "./components/ColorBar";
 
 export default function App() {
   useEffect(loadGm, []);
@@ -11,8 +13,26 @@ export default function App() {
   const notes = use$(() => eventStore.timeline({ kinds: [1], authors: [PUBKEY] }), []);
   const loading = use$(loading$);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [color, setColor] = useState<string | null>(null);
+  const [buckets, setBuckets] = useState<Record<string, string>>({});
+  const analyzed = useRef(new Set<string>());
 
-  const gms = (notes ?? []).filter((note) => matchesFilter(note) && getImages(note).length > 0);
+  const withImages = (notes ?? []).filter(
+    (note) => matchesFilter(note) && getImages(note).length > 0,
+  );
+  const visible = color ? withImages.filter((note) => buckets[note.id] === color) : withImages;
+
+  useEffect(() => {
+    for (const note of notes ?? []) {
+      if (analyzed.current.has(note.id)) continue;
+      const src = getImages(note)[0];
+      if (!matchesFilter(note) || !src) continue;
+      analyzed.current.add(note.id);
+      loadDominantColor(src).then((id) => {
+        if (id) setBuckets((prev) => ({ ...prev, [note.id]: id }));
+      });
+    }
+  }, [notes]);
 
   function handleLoadMore() {
     const oldest = notes?.at(-1);
@@ -33,22 +53,25 @@ export default function App() {
     return texts[Math.floor(Math.random() * texts.length)];
   }, [label]);
 
+  if (withImages.length === 0)
+    return (
+      <div className="app">
+        <p className="state">{loading ? loadingText : `No ${label} posts found.`}</p>
+      </div>
+    );
+
   return (
     <div className="app">
-      {gms.length > 0 ? (
-        <>
-          <Gallery notes={gms} />
-          <div className="load-more">
-            <button onClick={handleLoadMore} disabled={loadingMore}>
-              {loadingMore ? "Loading..." : "Load more"}
-            </button>
-          </div>
-        </>
-      ) : loading ? (
-        <p className="state">{loadingText}</p>
-      ) : (
-        <p className="state">No {label} posts found.</p>
+      <ColorBar active={color} onSelect={setColor} />
+      <Gallery notes={visible} />
+      {color && visible.length === 0 && (
+        <p className="state">No {color} images yet. Try loading more.</p>
       )}
+      <div className="load-more">
+        <button onClick={handleLoadMore} disabled={loadingMore}>
+          {loadingMore ? "Loading..." : "Load more"}
+        </button>
+      </div>
     </div>
   );
 }

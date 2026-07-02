@@ -28,6 +28,40 @@ a {
   padding: 1.5rem;
 }
 
+.colorbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  padding: 0.75rem 0 1rem;
+  background: var(--bg);
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.swatch:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.swatch.active {
+  opacity: 1;
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
 .masonry {
   column-width: 300px;
   column-gap: 1rem;
