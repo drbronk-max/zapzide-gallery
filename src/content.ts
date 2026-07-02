@@ -1,6 +1,7 @@
 import { getParsedContent } from "applesauce-content/text";
 import type { Content } from "applesauce-content/nast";
 import { isImageURL, type NostrEvent } from "applesauce-core/helpers";
+import { FILTER_TERM } from "./config";
 
 function imagesFromNode(node: Content): string[] {
   if (node.type === "gallery") return node.links;
@@ -14,9 +15,9 @@ export function getImages(event: NostrEvent): string[] {
   return [...new Set(urls)];
 }
 
-const GM = /\bgm\b/i;
+const TERM = new RegExp(`\\b${FILTER_TERM}\\b`, "i");
 
-/** A note counts as a "GM" post if its content mentions gm as a word. */
-export function isGmPost(event: NostrEvent): boolean {
-  return GM.test(event.content);
+/** A note matches if its content mentions the filter term as a word. */
+export function matchesFilter(event: NostrEvent): boolean {
+  return TERM.test(event.content);
 }

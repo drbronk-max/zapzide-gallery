@@ -10,3 +10,6 @@ export const PUBKEY = decoded.data;
 export const RELAYS = ["wss://relay.dergigi.com", "wss://wot.dergigi.com"];
 
 export const LIMIT = 1000;
+
+/** The word a note must contain to show up, e.g. "gm" or "gn". */
+export const FILTER_TERM = (import.meta.env.VITE_FILTER_TERM ?? "gm").toLowerCase();

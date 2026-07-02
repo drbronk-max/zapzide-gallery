@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { NostrEvent } from "applesauce-core/helpers";
-import { getImages, isGmPost } from "./content";
+import { getImages, matchesFilter } from "./content";
 
 function note(content: string): NostrEvent {
   return { id: "x", pubkey: "y", created_at: 0, kind: 1, tags: [], content, sig: "" };
@@ -17,13 +17,13 @@ describe("getImages", () => {
   });
 });
 
-describe("isGmPost", () => {
-  it("matches gm as a word, case-insensitively", () => {
-    expect(isGmPost(note("GM everyone"))).toBe(true);
-    expect(isGmPost(note("gm"))).toBe(true);
+describe("matchesFilter", () => {
+  it("matches the term as a word, case-insensitively (default gm)", () => {
+    expect(matchesFilter(note("GM everyone"))).toBe(true);
+    expect(matchesFilter(note("gm"))).toBe(true);
   });
 
-  it("does not match gm inside other words", () => {
-    expect(isGmPost(note("programming is fun"))).toBe(false);
+  it("does not match the term inside other words", () => {
+    expect(matchesFilter(note("programming is fun"))).toBe(false);
   });
 });
