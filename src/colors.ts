@@ -1,3 +1,5 @@
+import { getColorSync } from "colorthief";
+
 export interface Swatch {
   id: string;
   label: string;
@@ -39,7 +41,7 @@ function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
   return [h, s, l];
 }
 
-/** Classify a single pixel into one of the swatch buckets. */
+/** Map an RGB color to one of the swatch buckets. */
 export function bucketOf(r: number, g: number, b: number): string {
   const [h, s, l] = rgbToHsl(r, g, b);
   if (l < 0.12) return "black";
@@ -55,43 +57,14 @@ export function bucketOf(r: number, g: number, b: number): string {
   return "pink";
 }
 
-const proxy = (src: string, size = 24) =>
-  `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=${size}&h=${size}&fit=cover`;
-
-/** Load a tiny CORS-safe thumbnail and return its predominant color bucket. */
-export function loadDominantColor(src: string): Promise<string | null> {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return resolve(null);
-        ctx.drawImage(img, 0, 0);
-        const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const counts: Record<string, number> = {};
-        for (let i = 0; i < data.length; i += 4) {
-          if (data[i + 3] < 128) continue;
-          const id = bucketOf(data[i], data[i + 1], data[i + 2]);
-          counts[id] = (counts[id] ?? 0) + 1;
-        }
-        let best: string | null = null;
-        let max = 0;
-        for (const id in counts) {
-          if (counts[id] > max) {
-            max = counts[id];
-            best = id;
-          }
-        }
-        resolve(best);
-      } catch {
-        resolve(null);
-      }
-    };
-    img.onerror = () => resolve(null);
-    img.src = proxy(src);
-  });
+/** Dominant color bucket of an already-loaded, CORS-clean image element. */
+export function bucketFromImage(img: HTMLImageElement): string | null {
+  try {
+    const color = getColorSync(img);
+    if (!color) return null;
+    const { r, g, b } = color.rgb();
+    return bucketOf(r, g, b);
+  } catch {
+    return null;
+  }
 }

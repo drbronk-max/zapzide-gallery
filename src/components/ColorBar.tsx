@@ -1,15 +1,20 @@
 import { SWATCHES } from "../colors";
 
 export function ColorBar({
+  present,
   active,
   onSelect,
 }: {
+  present: Set<string>;
   active: string | null;
   onSelect: (id: string | null) => void;
 }) {
+  const swatches = SWATCHES.filter((swatch) => present.has(swatch.id));
+  if (swatches.length === 0) return null;
+
   return (
     <div className="colorbar">
-      {SWATCHES.map((swatch) => (
+      {swatches.map((swatch) => (
         <button
           key={swatch.id}
           className={"swatch" + (active === swatch.id ? " active" : "")}

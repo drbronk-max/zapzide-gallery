@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { use$ } from "applesauce-react/hooks";
 import { FILTER_TERM, PUBKEY } from "./config";
 import { eventStore, loading$, loadGm, loadMore } from "./nostr";
 import { getImages, matchesFilter } from "./content";
-import { loadDominantColor } from "./colors";
 import { Gallery } from "./components/Gallery";
 import { ColorBar } from "./components/ColorBar";
 
@@ -15,24 +14,16 @@ export default function App() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [color, setColor] = useState<string | null>(null);
   const [buckets, setBuckets] = useState<Record<string, string>>({});
-  const analyzed = useRef(new Set<string>());
+
+  const onColor = useCallback((id: string, bucket: string | null) => {
+    if (bucket) setBuckets((prev) => (prev[id] === bucket ? prev : { ...prev, [id]: bucket }));
+  }, []);
 
   const withImages = (notes ?? []).filter(
     (note) => matchesFilter(note) && getImages(note).length > 0,
   );
-  const visible = color ? withImages.filter((note) => buckets[note.id] === color) : withImages;
-
-  useEffect(() => {
-    for (const note of notes ?? []) {
-      if (analyzed.current.has(note.id)) continue;
-      const src = getImages(note)[0];
-      if (!matchesFilter(note) || !src) continue;
-      analyzed.current.add(note.id);
-      loadDominantColor(src).then((id) => {
-        if (id) setBuckets((prev) => ({ ...prev, [note.id]: id }));
-      });
-    }
-  }, [notes]);
+  const present = new Set(withImages.map((note) => buckets[note.id]).filter(Boolean));
+  const visibleCount = withImages.filter((note) => !color || buckets[note.id] === color).length;
 
   function handleLoadMore() {
     const oldest = notes?.at(-1);
@@ -62,9 +53,9 @@ export default function App() {
 
   return (
     <div className="app">
-      <ColorBar active={color} onSelect={setColor} />
-      <Gallery notes={visible} />
-      {color && visible.length === 0 && (
+      <ColorBar present={present} active={color} onSelect={setColor} />
+      <Gallery notes={withImages} activeColor={color} buckets={buckets} onColor={onColor} />
+      {color && visibleCount === 0 && (
         <p className="state">No {color} images yet. Try loading more.</p>
       )}
       <div className="load-more">
