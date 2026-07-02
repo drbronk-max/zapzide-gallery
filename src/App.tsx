@@ -18,11 +18,6 @@ export default function App() {
     const texts = [
       `It's always ${label} somewhere...`,
       `A ${label} is never late, nor is it early. It arrives precisely when it means to.`,
-      "Waking up the relays...",
-      `Stacking ${label}s, one block at a time...`,
-      "Brewing coffee, fetching photons...",
-      `Somewhere the sun is rising just for this ${label}...`,
-      "Reticulating sunbeams...",
     ];
     return texts[Math.floor(Math.random() * texts.length)];
   }, [label]);
