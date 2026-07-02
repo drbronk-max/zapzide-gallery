@@ -15,11 +15,6 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>GM</h1>
-        <p>Good mornings from dergigi</p>
-      </header>
-
       {gms.length > 0 ? (
         <Gallery notes={gms} />
       ) : loading ? (
