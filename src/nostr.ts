@@ -1,22 +1,22 @@
 import { EventStore, mapEventsToStore } from "applesauce-core";
 import { RelayPool } from "applesauce-relay";
 import { BehaviorSubject } from "rxjs";
-import { LIMIT, PUBKEY, RELAYS } from "./config";
+import { LIMIT } from "./config";
 
 export const eventStore = new EventStore();
 export const loading$ = new BehaviorSubject(true);
 
-const pool = new RelayPool();
+export const pool = new RelayPool();
 
 let started = false;
 
-/** Load the author's notes from the relays into the event store (runs once). */
-export function loadGm() {
+/** Load a user's notes and profile from their relays into the event store (runs once). */
+export function loadGm(pubkey: string, relays: string[]) {
   if (started) return;
   started = true;
 
   pool
-    .request(RELAYS, { kinds: [0, 1], authors: [PUBKEY], limit: LIMIT })
+    .request(relays, { kinds: [0, 1], authors: [pubkey], limit: LIMIT })
     .pipe(mapEventsToStore(eventStore))
     .subscribe({
       complete: () => loading$.next(false),
@@ -27,9 +27,9 @@ export function loadGm() {
     });
 }
 
-/** Fetch an older page of the author's notes (before `until`) into the store. */
-export function loadMore(until: number) {
+/** Fetch an older page of a user's notes (before `until`) into the store. */
+export function loadMore(pubkey: string, relays: string[], until: number) {
   return pool
-    .request(RELAYS, { kinds: [1], authors: [PUBKEY], until, limit: LIMIT })
+    .request(relays, { kinds: [1], authors: [pubkey], until, limit: LIMIT })
     .pipe(mapEventsToStore(eventStore));
 }

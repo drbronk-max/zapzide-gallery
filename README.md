@@ -4,11 +4,22 @@ A view-only nostr client that shows [dergigi](https://njump.to/npub1dergggklka99
 
 Built with [applesauce](https://applesauce.build/), React, Vite and TypeScript.
 
+## Viewing other users
+
+Add a user to the path to see their gallery instead of the default:
+
+- `gm.dergigi.com/` shows the default user (dergigi).
+- `gm.dergigi.com/npub1...` or `gm.dergigi.com/nprofile1...` by NIP-19 identifier.
+- `gm.dergigi.com/name@domain` or `gm.dergigi.com/domain` by NIP-05 address (a bare domain resolves to `_@domain`).
+
+Their relays are discovered from their NIP-65 list (kind 10002) via the outbox model, falling back to the discovery relays.
+
 ## How it works
 
-- Notes are loaded by author from `relay.dergigi.com` and `wot.dergigi.com` (the outbox relay holds all of them, so no NIP-50 search is needed).
+- The identity is read from the URL path and resolved to a pubkey and their relays.
+- Notes are loaded by author from those relays.
 - Filtering happens client-side: a note shows up if it mentions `gm` as a word and links at least one image.
-- Image URLs are extracted with `applesauce-content` and rendered in a CSS-columns masonry that collapses to a single column on mobile.
+- Image URLs are extracted with `applesauce-content` and rendered in a masonry that collapses to a single column on mobile.
 
 ## Development
 
@@ -21,7 +32,7 @@ npm run build    # production build into dist/
 
 ## Configuration
 
-Author, relays and fetch limit live in [`src/config.ts`](src/config.ts). The filter term and page metadata are set via env vars (see [`.env`](.env) for the GM defaults):
+Default user, discovery relays and fetch limit live in [`src/config.ts`](src/config.ts). The filter term and page metadata are set via env vars (see [`.env`](.env) for the GM defaults):
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
@@ -32,7 +43,7 @@ Author, relays and fetch limit live in [`src/config.ts`](src/config.ts). The fil
 
 ## Deployment (Vercel)
 
-Vercel auto-detects Vite. Build command `npm run build`, output directory `dist`. It is a single-page app, so no rewrite config is needed.
+Vercel auto-detects Vite. Build command `npm run build`, output directory `dist`. [`vercel.json`](vercel.json) rewrites all paths to `index.html` so user paths like `/npub1...` load the app.
 
 Deploy the same repo twice, one project per domain, differing only in env vars:
 

@@ -1,18 +1,45 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Models } from "applesauce-core";
 import { use$ } from "applesauce-react/hooks";
-import { FILTER_TERM, NPUB, PUBKEY } from "./config";
+import { FILTER_TERM } from "./config";
 import { eventStore, loading$, loadGm, loadMore } from "./nostr";
+import { resolveIdentity, type Identity } from "./identity";
 import { getImages, matchesFilter } from "./content";
 import { matchesColor } from "./colors";
 import { Gallery } from "./components/Gallery";
 import { ColorBar } from "./components/ColorBar";
 
 export default function App() {
-  useEffect(loadGm, []);
+  const [identity, setIdentity] = useState<Identity | null>(null);
+  const [resolveError, setResolveError] = useState<string | null>(null);
 
-  const notes = use$(() => eventStore.timeline({ kinds: [1], authors: [PUBKEY] }), []);
-  const profile = use$(() => eventStore.model(Models.ProfileModel, PUBKEY), []);
+  useEffect(() => {
+    let cancelled = false;
+    resolveIdentity(window.location.pathname)
+      .then((id) => {
+        if (cancelled) return;
+        setIdentity(id);
+        loadGm(id.pubkey, id.relays);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        setResolveError(err instanceof Error ? err.message : "Couldn't find that user");
+        loading$.next(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const pubkey = identity?.pubkey;
+  const notes = use$(
+    () => (pubkey ? eventStore.timeline({ kinds: [1], authors: [pubkey] }) : undefined),
+    [pubkey],
+  );
+  const profile = use$(
+    () => (pubkey ? eventStore.model(Models.ProfileModel, pubkey) : undefined),
+    [pubkey],
+  );
   const loading = use$(loading$);
   const [loadingMore, setLoadingMore] = useState(false);
   const [color, setColor] = useState<string | null>(null);
@@ -33,9 +60,9 @@ export default function App() {
 
   function handleLoadMore() {
     const oldest = notes?.at(-1);
-    if (!oldest) return;
+    if (!oldest || !identity) return;
     setLoadingMore(true);
-    loadMore(oldest.created_at).subscribe({
+    loadMore(identity.pubkey, identity.relays, oldest.created_at).subscribe({
       complete: () => setLoadingMore(false),
       error: () => setLoadingMore(false),
     });
@@ -49,6 +76,13 @@ export default function App() {
     ];
     return texts[Math.floor(Math.random() * texts.length)];
   }, [label]);
+
+  if (resolveError)
+    return (
+      <div className="app">
+        <p className="state">{resolveError}</p>
+      </div>
+    );
 
   if (withImages.length === 0)
     return (
@@ -64,7 +98,7 @@ export default function App() {
         hasBW={hasBW}
         active={color}
         onSelect={setColor}
-        npub={NPUB}
+        npub={identity?.npub ?? ""}
         picture={profile?.picture}
         name={profile?.display_name || profile?.name}
       />
