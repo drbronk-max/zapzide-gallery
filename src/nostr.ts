@@ -16,7 +16,7 @@ export function loadGm() {
   started = true;
 
   pool
-    .request(RELAYS, { kinds: [1], authors: [PUBKEY], limit: LIMIT })
+    .request(RELAYS, { kinds: [0, 1], authors: [PUBKEY], limit: LIMIT })
     .pipe(mapEventsToStore(eventStore))
     .subscribe({
       complete: () => loading$.next(false),

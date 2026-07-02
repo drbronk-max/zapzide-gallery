@@ -1,15 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Models } from "applesauce-core";
 import { use$ } from "applesauce-react/hooks";
-import { FILTER_TERM, PUBKEY } from "./config";
+import { FILTER_TERM, NPUB, PUBKEY } from "./config";
 import { eventStore, loading$, loadGm, loadMore } from "./nostr";
 import { getImages, matchesFilter } from "./content";
 import { Gallery } from "./components/Gallery";
 import { ColorBar } from "./components/ColorBar";
+import { Avatar } from "./components/Avatar";
 
 export default function App() {
   useEffect(loadGm, []);
 
   const notes = use$(() => eventStore.timeline({ kinds: [1], authors: [PUBKEY] }), []);
+  const profile = use$(() => eventStore.model(Models.ProfileModel, PUBKEY), []);
   const loading = use$(loading$);
   const [loadingMore, setLoadingMore] = useState(false);
   const [color, setColor] = useState<string | null>(null);
@@ -55,7 +58,10 @@ export default function App() {
 
   return (
     <div className="app">
-      <ColorBar present={present} active={color} onSelect={setColor} />
+      <div className="topbar">
+        <Avatar npub={NPUB} picture={profile?.picture} name={profile?.display_name || profile?.name} />
+        <ColorBar present={present} active={color} onSelect={setColor} />
+      </div>
       <Gallery notes={withImages} activeColor={color} buckets={buckets} onColors={onColors} />
       {color && visibleCount === 0 && (
         <p className="state">No {color} images yet. Try loading more.</p>
