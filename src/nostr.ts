@@ -26,3 +26,10 @@ export function loadGm() {
       },
     });
 }
+
+/** Fetch an older page of the author's notes (before `until`) into the store. */
+export function loadMore(until: number) {
+  return pool
+    .request(RELAYS, { kinds: [1], authors: [PUBKEY], until, limit: LIMIT })
+    .pipe(mapEventsToStore(eventStore));
+}
