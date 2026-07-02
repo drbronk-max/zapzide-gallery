@@ -47,6 +47,25 @@
         gap: 22px;
         color: #fff;
       }
+      /* contain mode: a single portrait image hugged to the right, label beside it */
+      body.contain .bg {
+        object-fit: contain;
+        object-position: right center;
+      }
+      body.contain .scrim {
+        background: linear-gradient(
+          to right,
+          rgba(11, 11, 12, 0.95) 0%,
+          rgba(11, 11, 12, 0.6) 34%,
+          rgba(11, 11, 12, 0) 58%
+        );
+      }
+      body.contain .meta {
+        left: 64px;
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+      }
       .glyph {
         width: 76px;
         height: 76px;
@@ -104,6 +123,7 @@
         },
       };
       const p = new URLSearchParams(location.search);
+      if ((p.get("fit") || "cover") === "contain") document.body.classList.add("contain");
       document.getElementById("bg").src = p.get("bg") || "";
       const g = GLYPHS[p.get("glyph") || "image"];
       document.getElementById("glyph").innerHTML =
