@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Models } from "applesauce-core";
 import { use$ } from "applesauce-react/hooks";
 import { FILTER_TERM } from "./config";
@@ -58,15 +58,34 @@ export default function App() {
     (note) => !color || matchesColor(buckets[note.id], color),
   ).length;
 
-  function handleLoadMore() {
+  const handleLoadMore = useCallback(() => {
     const oldest = notes?.at(-1);
-    if (!oldest || !identity) return;
+    if (!oldest || !identity || loadingMore) return;
     setLoadingMore(true);
     loadMore(identity.pubkey, identity.relays, oldest.created_at).subscribe({
       complete: () => setLoadingMore(false),
       error: () => setLoadingMore(false),
     });
-  }
+  }, [notes, identity, loadingMore]);
+
+  // Infinite scroll: load more when the sentinel near the bottom comes into view.
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef(handleLoadMore);
+  loadMoreRef.current = handleLoadMore;
+  const hasGallery = withImages.length > 0;
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMoreRef.current();
+      },
+      { rootMargin: "800px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasGallery]);
 
   const label = FILTER_TERM.toUpperCase();
   const loadingText = useMemo(() => {
@@ -106,6 +125,7 @@ export default function App() {
       {color && visibleCount === 0 && (
         <p className="state">No {color} images yet. Try loading more.</p>
       )}
+      <div ref={sentinelRef} className="sentinel" />
       <div className="load-more">
         <button onClick={handleLoadMore} disabled={loadingMore}>
           {loadingMore ? "Loading..." : "Load more"}
