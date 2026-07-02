@@ -1,6 +1,6 @@
 # GM Gallery
 
-A view-only nostr client that shows [dergigi](https://njump.me/npub1dergggklka99wwrs92yz8wdjs952h2ux2ha2ed598ngwu9w7a6fsh9xzpc)'s GM posts that contain an image, in a masonry gallery. Lives at [gm.dergigi.com](https://gm.dergigi.com).
+A view-only nostr client that shows [dergigi](https://njump.to/npub1dergggklka99wwrs92yz8wdjs952h2ux2ha2ed598ngwu9w7a6fsh9xzpc)'s GM posts that contain an image, in a masonry gallery. Lives at [gm.dergigi.com](https://gm.dergigi.com).
 
 Built with [applesauce](https://applesauce.build/), React, Vite and TypeScript.
 
