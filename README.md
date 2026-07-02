@@ -36,7 +36,7 @@ Default user, discovery relays and fetch limit live in [`src/config.ts`](src/con
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
-| `VITE_FILTER_TERM` | Word a note must contain to show up. Empty matches every note | `gm` |
+| `VITE_FILTER_TERM` | Word a note must contain to show up. Use `*` (or `all`/`any`/`none`) to match every note | `gm` |
 | `VITE_INITIAL_COLOR` | Color filter pre-selected on load, e.g. `bw`, `blue` | none |
 | `VITE_SITE_TITLE` | Browser tab and OG title | `GM - Good mornings from dergigi` |
 | `VITE_SITE_DESCRIPTION` | Meta and OG description | `A gallery of dergigi's GM posts on nostr.` |
@@ -58,10 +58,10 @@ VITE_SITE_DESCRIPTION=A gallery of dergigi's GN posts on nostr.
 VITE_SITE_URL=https://gn.dergigi.com
 ```
 
-- `bw.dergigi.com`: no keyword filter, black-and-white filter pre-selected, so it shows every image that is black and white. Set an empty `VITE_FILTER_TERM`:
+- `bw.dergigi.com`: no keyword filter, black-and-white filter pre-selected, so it shows every image that is black and white. Use `*` for `VITE_FILTER_TERM` to match every note (Vercel requires a non-empty value; `*`, `all`, `any` and `none` all mean match-all):
 
 ```
-VITE_FILTER_TERM=
+VITE_FILTER_TERM=*
 VITE_INITIAL_COLOR=bw
 VITE_SITE_TITLE=BW - Black and white from dergigi
 VITE_SITE_DESCRIPTION=A gallery of dergigi's black-and-white posts on nostr.
