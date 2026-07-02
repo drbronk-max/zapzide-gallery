@@ -27,10 +27,7 @@ a {
 }
 
 .about {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10;
+  margin-left: auto;
   font-size: 0.8rem;
   color: #9aa0a6;
   text-decoration: none;

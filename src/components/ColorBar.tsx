@@ -52,6 +52,14 @@ export function ColorBar({
           ×
         </button>
       )}
+      <a
+        className="about"
+        href="https://github.com/dergigi/gm-gallery"
+        target="_blank"
+        rel="noreferrer"
+      >
+        What is this?
+      </a>
     </div>
   );
 }

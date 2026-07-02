@@ -50,28 +50,15 @@ export default function App() {
     return texts[Math.floor(Math.random() * texts.length)];
   }, [label]);
 
-  const about = (
-    <a
-      className="about"
-      href="https://github.com/dergigi/gm-gallery"
-      target="_blank"
-      rel="noreferrer"
-    >
-      What is this?
-    </a>
-  );
-
   if (withImages.length === 0)
     return (
       <div className="app">
-        {about}
         <p className="state">{loading ? loadingText : `No ${label} posts found.`}</p>
       </div>
     );
 
   return (
     <div className="app">
-      {about}
       <ColorBar
         present={present}
         hasBW={hasBW}
