@@ -117,8 +117,8 @@ VITE_OG_IMAGE=/og/img.png
 VITE_FILTER_TERM=*
 VITE_IMAGE_EXT=gif
 VITE_SITE_LABEL=gif
-VITE_SITE_TITLE=GIFs from dergigi
-VITE_SITE_DESCRIPTION=A gallery of dergigi's gif posts on nostr.
+VITE_SITE_TITLE=GIFs
+VITE_SITE_DESCRIPTION=A gallery of gif posts on nostr.
 VITE_SITE_URL=https://gif.dergigi.com
 VITE_OG_IMAGE=/og/gif.png
 ```
