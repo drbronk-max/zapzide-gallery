@@ -10,6 +10,7 @@ Built with [applesauce](https://applesauce.build/), React, Vite and TypeScript.
 - [gn.dergigi.com](https://gn.dergigi.com): GN posts.
 - [bw.dergigi.com](https://bw.dergigi.com): black-and-white images.
 - [img.dergigi.com](https://img.dergigi.com): all image posts.
+- [gif.dergigi.com](https://gif.dergigi.com): gifs only.
 
 ## Viewing other users
 
@@ -45,6 +46,7 @@ Default user, discovery relays and fetch limit live in [`src/config.ts`](src/con
 | --- | --- | --- |
 | `VITE_FILTER_TERM` | Word a note must contain to show up. Use `*` (or `all`/`any`/`none`) to match every note | `gm` |
 | `VITE_INITIAL_COLOR` | Color filter pre-selected on load, e.g. `bw`, `blue` | none |
+| `VITE_IMAGE_EXT` | Only show images with this file extension, e.g. `gif` | any image |
 | `VITE_SITE_LABEL` | Short label in the header link and status messages | the term or color |
 | `VITE_LINK_MODE` | Default target for opening a post: `njump` (web) or `native` (`nostr:` app link). Visitors can flip it in the top bar | `njump` |
 | `VITE_SITE_TITLE` | Browser tab and OG title | `GM - Good mornings from dergigi` |
@@ -91,6 +93,18 @@ VITE_SITE_TITLE=Images from dergigi
 VITE_SITE_DESCRIPTION=A gallery of dergigi's image posts on nostr.
 VITE_SITE_URL=https://img.dergigi.com
 VITE_OG_IMAGE=/og/img.png
+```
+
+- `gif.dergigi.com`: every image post that links a `.gif`:
+
+```
+VITE_FILTER_TERM=*
+VITE_IMAGE_EXT=gif
+VITE_SITE_LABEL=gif
+VITE_SITE_TITLE=GIFs from dergigi
+VITE_SITE_DESCRIPTION=A gallery of dergigi's gif posts on nostr.
+VITE_SITE_URL=https://gif.dergigi.com
+VITE_OG_IMAGE=/og/gif.png
 ```
 
 Then add the matching custom domain in each project's settings.

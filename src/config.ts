@@ -26,6 +26,12 @@ export const FILTER_TERM = MATCH_ALL.has(rawTerm) ? "" : rawTerm;
 /** A color filter to pre-select on load, e.g. "bw" or "blue". Null means none. */
 export const INITIAL_COLOR = (import.meta.env.VITE_INITIAL_COLOR ?? "").trim().toLowerCase() || null;
 
+/** Restrict to images with this file extension, e.g. "gif". Empty means any image. */
+export const IMAGE_EXT = (import.meta.env.VITE_IMAGE_EXT ?? "")
+  .trim()
+  .toLowerCase()
+  .replace(/^\./, "");
+
 /** Short label used in the header link and status messages. Defaults to the term or color. */
 const rawLabel = (import.meta.env.VITE_SITE_LABEL ?? "").trim();
 export const LABEL = (rawLabel || FILTER_TERM || INITIAL_COLOR || "gm").toUpperCase();
