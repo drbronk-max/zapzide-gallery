@@ -10,8 +10,8 @@ export const DISCOVERY_RELAYS = [
   "wss://wot.dergigi.com",
   "wss://purplepag.es",
   "wss://relay.damus.io",
+  "wss://relay.primal.net",
 ];
-
 export const LIMIT = 1000;
 
 // Values that mean "no keyword filter, match every note". Vercel requires a
