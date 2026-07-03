@@ -79,7 +79,20 @@ export default function App() {
       error: () => setLoadingMore(false),
     });
   }, [notes, identity, loadingMore]);
-
+// Auto-load: keep fetching older pages automatically until a page comes
+  // back with no new notes, or a safety cap is hit.
+  const autoLoadCountRef = useRef(0);
+  const prevNotesLengthRef = useRef(0);
+  useEffect(() => {
+    if (loading || loadingMore) return;
+    if (!notes || notes.length === 0) return;
+    if (autoLoadCountRef.current >= 40) return;
+    if (notes.length === prevNotesLengthRef.current) return;
+    prevNotesLengthRef.current = notes.length;
+    autoLoadCountRef.current += 1;
+    const t = setTimeout(() => handleLoadMore(), 250);
+    return () => clearTimeout(t);
+  }, [notes, loading, loadingMore, handleLoadMore]);
   // Infinite scroll: load more when the sentinel near the bottom comes into view.
   const sentinelRef = useRef<HTMLDivElement>(null);
   const loadMoreRef = useRef(handleLoadMore);
