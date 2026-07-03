@@ -11,6 +11,8 @@ export const DISCOVERY_RELAYS = [
   "wss://purplepag.es",
   "wss://relay.damus.io",
   "wss://relay.primal.net",
+  "wss://directory.yabu.me",
+  "wss://theforest.nostr1.com",
 ];
 export const LIMIT = 1000;
 
