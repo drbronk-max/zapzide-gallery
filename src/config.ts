@@ -1,5 +1,5 @@
 /** The npub shown when no user is specified in the URL path. */
-export const DEFAULT_NPUB = "npub1dergggklka99wwrs92yz8wdjs952h2ux2ha2ed598ngwu9w7a6fsh9xzpc";
+export const DEFAULT_NPUB = "npub1j6jh3a44q3jxmc2ph2gta3t9r9j65qwlqcze9zehsksnwfgyay7szpg7fw";
 
 /**
  * Relays queried to discover a user's NIP-65 relay list and profile, and used
