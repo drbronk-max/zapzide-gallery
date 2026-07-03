@@ -86,7 +86,7 @@ export default function App() {
   useEffect(() => {
     if (loading || loadingMore) return;
     if (!notes || notes.length === 0) return;
-    if (autoLoadCountRef.current >= 40) return;
+    if (autoLoadCountRef.current >= 200) return;
     if (notes.length === prevNotesLengthRef.current) return;
     prevNotesLengthRef.current = notes.length;
     autoLoadCountRef.current += 1;
