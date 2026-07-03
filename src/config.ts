@@ -11,6 +11,8 @@ export const DISCOVERY_RELAYS = [
   "wss://relay.primal.net",
   "wss://directory.yabu.me",
   "wss://theforest.nostr1.com",
+  "wss://nos.lol",
+  "wss://relay.nostr.band",
 ];
 export const LIMIT = 1000;
 
