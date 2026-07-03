@@ -42,17 +42,12 @@ async function discoverOutboxes(pubkey: string, hints: string[]): Promise<string
  */
 export async function resolveIdentity(input: string): Promise<Identity> {
   const trimmed = input.replace(/^\/+|\/+$/g, "").trim() || DEFAULT_NPUB;
-
   const pointer = await toPointer(trimmed);
   if (!pointer) throw new Error(`Couldn't find "${trimmed}"`);
 
-  const hints = pointer.relays ?? [];
-  const outboxes = await discoverOutboxes(pointer.pubkey, hints);
-
-  const relays = [...new Set([...outboxes, ...hints])];
   return {
     pubkey: pointer.pubkey,
-    relays: relays.length ? relays : DISCOVERY_RELAYS,
+    relays: DISCOVERY_RELAYS,
     npub: npubEncode(pointer.pubkey),
   };
 }
