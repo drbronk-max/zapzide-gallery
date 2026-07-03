@@ -6,13 +6,7 @@ export const DEFAULT_NPUB = "npub1j6jh3a44q3jxmc2ph2gta3t9r9j65qwlqcze9zehsksnwf
  * as a fallback when a user has no relays of their own.
  */
 export const DISCOVERY_RELAYS = [
-  "wss://relay.dergigi.com",
-  "wss://wot.dergigi.com",
-  "wss://purplepag.es",
-  "wss://relay.damus.io",
   "wss://relay.primal.net",
-  "wss://directory.yabu.me",
-  "wss://theforest.nostr1.com",
 ];
 export const LIMIT = 1000;
 
